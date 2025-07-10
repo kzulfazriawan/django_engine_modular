@@ -50,6 +50,22 @@ class AuthenticationTokenTests(TestCase):
         self.assertEqual(response['username'], payload['username'])
         self.assertEqual(response['email'], payload['email'])
 
+        # ____logout token____
+        delete = self.client.delete(
+            reverse('authentication.token'),
+            headers=headers
+        )
+        self.assertEqual(delete.status_code, 200)
+
+        # ____view the account information again____
+        get = self.client.get(
+            '/api/v1/authentication/account/',
+            headers=headers
+        )
+        response = get.json()
+        self.assertNotEqual(get.status_code, 200)
+        self.assertEqual(response.detail, 'Invalid token')
+
     def testFailed(self):
         payload = {
             'username': 'public',
