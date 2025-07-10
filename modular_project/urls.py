@@ -22,4 +22,5 @@ V1 = "api/v1"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(f'{V1}/authentication/', include('authentication.urls'), name='authorization'),
+    path(f'{V1}/products/', include('products.urls'), name='products'),
 ]

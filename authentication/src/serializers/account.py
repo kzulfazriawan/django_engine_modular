@@ -37,6 +37,9 @@ class AccountSerializer(ModelSerializer):
         if User.objects.exclude(pk=self.instance.pk).filter(email=attrs['email']).exists():
             raise ValidationError('email is already in use')
 
+        if User.objects.exclude(pk=self.instance.pk).filter(email=attrs['username']).exists():
+            raise ValidationError('username is already in use')
+
         return attrs
 
     def update(self, instance, validated_data):

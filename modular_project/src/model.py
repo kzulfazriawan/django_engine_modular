@@ -32,7 +32,7 @@ class AbstractTextModel(_.Model):
     class Meta:
         abstract = True
 
-    display_text = _.CharField(null=False, max_length=191)
+    display_text     = _.CharField(null=False, max_length=191)
     sub_display_text = _.CharField(null=True, max_length=191)
-    content_info = _.TextField(null=True)
-    relative_text = _.TextField(null=True)
+    content_info     = _.TextField(null=True)
+    relative_text    = _.TextField(null=True)

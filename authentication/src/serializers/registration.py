@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer, CharField, EmailField
@@ -7,6 +7,7 @@ from rest_framework.validators import UniqueValidator
 
 class RegistrationSerializer(ModelSerializer):
     email = EmailField(validators=[UniqueValidator(queryset=User.objects.all())])
+    username = CharField(validators=[UniqueValidator(queryset=User.objects.all())])
     password = CharField(write_only=True, validators=[validate_password])
     password2 = CharField(write_only=True)
 
@@ -55,6 +56,10 @@ class RegistrationSerializer(ModelSerializer):
         instance.set_password(validated_data.get('password'))
         instance.is_active = True
         instance.save()
+
+        # Assign to 'public' group
+        public_group, _ = Group.objects.get_or_create(name='public')
+        instance.groups.add(public_group)
 
         return instance
 

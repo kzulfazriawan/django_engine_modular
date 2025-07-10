@@ -12,6 +12,7 @@ class ViewSet(_View):
     _route_location = r'account/'
     _route_name = 'authentication.account'
     _generic_view = True
+
     renderer_classes = (_JSONRenderer,)
     permission_classes = (_IsAuthenticated,)
     serializer_class = _Serializer
