@@ -3,12 +3,18 @@ const AppRouter = Backbone.Router.extend({
         'login'       : 'viewLogin',
         'registration': 'viewRegistration',
         'logout'      : 'viewLogout',
+        'product'     : 'viewProduct',
         ''            : 'viewDashboard'
     },
   
     viewDashboard() {
         const dashboardView = new ViewDashboard();
         dashboardView.render();
+    },
+
+    viewProduct() {
+        const productView = new ViewProduct();
+        productView.render();
     },
 
     viewLogin() {

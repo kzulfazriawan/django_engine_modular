@@ -68,5 +68,6 @@ class AccountSerializer(ModelSerializer):
         return {
             'name': ' '.join([instance.first_name.capitalize(), instance.last_name.capitalize()]),
             'email': instance.email,
-            'username': instance.username
+            'username': instance.username,
+            'roles': instance.groups.first().name
         }

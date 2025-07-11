@@ -1,0 +1,53 @@
+<div class="uk-container uk-container-large uk-margin-top">
+    <div class="uk-card uk-card-default uk-width-expand uk-margin">
+        <div class="uk-card-header">
+            <div class="uk-grid-small uk-flex-middle" uk-grid>
+                <div class="uk-width-auto">
+                    <nav class="uk-navbar-container uk-navbar-transparent">
+                        <div class="uk-container uk-container-expand">
+                            <div uk-navbar>
+                                <ul class="uk-navbar-nav">
+                                    <li><a href="#">Home</a></li>
+                                    <li class="uk-active"><a href="#product">Product</a></li>
+                                    <li><a href="#logout">Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="uk-card-body">
+            <label>Authorized as <span id="authorized-as"></span></label>
+            <form class="uk-form-stacked uk-margin-top" id="create-product-form">
+                <div class="uk-margin-small" id="first-name-stack">
+                    <label class="uk-form-label" for="form-stacked-text">Name</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" name="name" id="name" type="text" placeholder="Name...">
+                    </div>
+                </div>
+                <div class="uk-margin-small" id="first-barcode-stack">
+                    <label class="uk-form-label" for="form-stacked-text">Barcode</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" name="barcode" id="barcode" type="text" placeholder="Barcode...">
+                    </div>
+                </div>
+                <div class="uk-margin-small" id="first-stock-stack">
+                    <label class="uk-form-label" for="form-stacked-text">Stock</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" name="stock" id="stock" type="number" placeholder="Stock...">
+                    </div>
+                </div>
+                <div class="uk-margin-small" id="first-price-stack">
+                    <label class="uk-form-label" for="form-stacked-text">Price</label>
+                    <div class="uk-form-controls">
+                        <input class="uk-input" name="price" id="price" type="number" placeholder="Price...">
+                    </div>
+                </div>
+                <div class="uk-margin-small">
+                    <button class="uk-button uk-button-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -3,20 +3,35 @@
         <div class="uk-card-header">
             <div class="uk-grid-small uk-flex-middle" uk-grid>
                 <div class="uk-width-auto">
-                    <ul class="uk-iconnav">
-                        <li><a href="#" uk-icon="icon: home"></a></li>
-                        <li><a href="#" uk-icon="icon: file-edit"></a></li>
-                        <li><a href="#logout" uk-icon="icon: sign-out"></a></li>
-                    </ul>
+                    <nav class="uk-navbar-container uk-navbar-transparent">
+                        <div class="uk-container uk-container-expand">
+                            <div uk-navbar>
+                                <ul class="uk-navbar-nav">
+                                    <li class="uk-active"><a href="#">Home</a></li>
+                                    <li><a href="#product">Product</a></li>
+                                    <li><a href="#logout">Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
                 </div>
             </div>
         </div>
         <div class="uk-card-body">
             <label>Authorized as <span id="authorized-as"></span></label>
-
-        </div>
-        <div class="uk-card-footer">
-            <a href="#" class="uk-button uk-button-text">Read more</a>
+            <table class="uk-table uk-table-small uk-table-divider uk-table-striped uk-text-small">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Barcode</th>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body-products">
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
