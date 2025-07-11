@@ -17,10 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from engine.utils import get_dynamic_urls
+
 V1 = "api/v1"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(f'{V1}/authentication/', include('authentication.urls'), name='authorization'),
-    path(f'{V1}/products/', include('products.urls'), name='products'),
-]
+    path(f'{V1}/engine/', include('engine.urls'), name='engine'),
+] + get_dynamic_urls()
