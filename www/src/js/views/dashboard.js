@@ -57,14 +57,16 @@ const ViewDashboard = Backbone.View.extend({
 
     render() {
         if(localStorage.getItem('token')){
+            var trash = '';
             this.$el.html(this.dashboard);
             // ____Get Account____
             this.account.each(function(item){
+                trash = (item.get('roles') == 'manager') ? '<li><a href="#" uk-icon="icon: trash"></a></li>' : '';
                 this.$('#authorized-as').html(`<span class="uk-text-bold">${item.get('name')}</span> (${item.get('username')})`);
             });
             
             this.products.each(function(product) {
-                let action = '<ul class="uk-iconnav"><li><a href="#" uk-icon="icon: file-edit"></a></li><li><a href="#" uk-icon="icon: trash"></a></li></ul>';
+                let action = '<ul class="uk-iconnav"><li><a href="#" uk-icon="icon: file-edit"></a></li>' + trash + '</ul>';
                 this.$('#table-body-products').append(
                     `<tr><td>${product.get('name')}</td><td>${product.get('barcode')}</td><td>${product.get('stock')}</td><td>${product.get('price')}</td><td>${action}</td></tr>`
                 );
