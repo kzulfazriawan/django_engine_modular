@@ -2,7 +2,24 @@ const ViewRegistration = Backbone.View.extend({
     el: '#app',
     events: {
         'submit #registration-form': 'registration'
-      },
+    },
+
+    initialize: function() {
+        this.registration = '';
+        const self = this;
+
+        $.ajax({
+            url: 'http://localhost:8000/api/v1/engine/modules/products/',
+            method: 'GET',
+            content_type: 'application/json',
+            success: function(response){
+                console.log(response);
+            },
+            error: function(response){
+                window.location.href = '/not_found.html';
+            }
+        });
+    },
   
     registration(e){
         e.preventDefault();
@@ -33,7 +50,7 @@ const ViewRegistration = Backbone.View.extend({
                 localStorage.setItem('token', response.token);
                 this.$('#first-name-stack').before(`<div class="uk-alert-success uk-padding-small">Registration success</div>`);
                 setTimeout(() => {
-                    window.location.href = '/#login';
+                    window.location.href = '/#registration';
                 }, 3000);
             },
             error: (response) => {
@@ -77,10 +94,10 @@ const ViewRegistration = Backbone.View.extend({
     }, 
 
     render() {
-      $.get('/src/templates/registration.html', (html) => {
-        this.$el.html(html);
-      });
-      return this;
+        $.get('/src/templates/registration.html', (html) => {
+            this.$el.html(html);
+        });
+        return this;
     },
   });
   

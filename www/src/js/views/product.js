@@ -16,25 +16,10 @@ const ViewProduct = Backbone.View.extend({
                 $.get('/src/templates/product.html', (html) => {
                     self.product = html;
                 });
-
-                self.account = new AccountCollection();
-                self.account.fetch({
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('Authorization', 'Token ' + localStorage.getItem('token'));
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                    },
-                    success: function() {
-                        self.render;
-                    },
-                    error: function(collection, response) {
-                        alert('Authorization is not valid');
-                        window.location.href = '/#login';
-                    }
-                });
-                self.listenTo(self.account, 'sync', self.render);
+                
+                get_account(self);
             },
             error: function(response){
-                console.log(response);
                 window.location.href = '/not_found.html';
             }
         });

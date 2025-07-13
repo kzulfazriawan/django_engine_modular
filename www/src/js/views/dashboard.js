@@ -1,8 +1,34 @@
 const ViewDashboard = Backbone.View.extend({
     el: '#app',
+
+    events: {
+        'click .link-delete': 'onDelete'
+    },
+    onDelete(e){
+        e.preventDefault();
+        if (confirm('Are you sure want to delete this?')){
+            let product_id = $(e.currentTarget).attr('data-id');
     
+            const product = new Product({ id: product_id + '/'});
+        
+            product.destroy({
+                wait: true,
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'Token ' + localStorage.getItem('token'));
+                },
+                success: function() {
+                    UIkit.modal('#modal-example').hide();
+                    alert("Product deleted");
+                },
+                error: function(model, response) {
+                    console.error("Failed to delete:", response.responseText);
+                }
+            });
+        }
+    },
+
     initialize: function() {
-        this.dashboard = ''
+        this.dashboard = '';
         const self = this;
 
         $.ajax({
@@ -16,56 +42,29 @@ const ViewDashboard = Backbone.View.extend({
                     self.dashboard = html;
                 });
 
-                self.products = new ProductCollection();
-                self.products.fetch({
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('Authorization', 'Token ' + localStorage.getItem('token'));
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                    },
-                    success: function() {
-                        self.render;
-                    },
-                    error: function(collection, response) {
-                        alert('Service unavailable');
-                        window.location.href = '/not_found.html';
-                    }
-                });
-                self.listenTo(self.products, 'sync', self.render);
-        
-                self.account = new AccountCollection();
-                self.account.fetch({
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader('Authorization', 'Token ' + localStorage.getItem('token'));
-                        xhr.setRequestHeader('Content-Type', 'application/json');
-                    },
-                    success: function() {
-                        self.render;
-                    },
-                    error: function(collection, response) {
-                        alert('Authorization is not valid');
-                        window.location.href = '/#login';
-                    }
-                });
-                self.listenTo(self.account, 'sync', self.render);
+                get_account(self);
+                get_products(self);
             },
             error: function(response){
-                console.log(response);
-                //window.location.href = '/not_found.html';
+                window.location.href = '/not_found.html';
             }
         });
     },
 
     render() {
         if(localStorage.getItem('token')){
-            var trash = '';
+            var trash = false;
             this.$el.html(this.dashboard);
+
             // ____Get Account____
             this.account.each(function(item){
-                trash = (item.get('roles') == 'manager') ? '<li><a href="#" uk-icon="icon: trash"></a></li>' : '';
+                trash = (item.get('roles') == 'manager') ? true : false;
                 this.$('#authorized-as').html(`<span class="uk-text-bold">${item.get('name')}</span> (${item.get('username')})`);
             });
             
+            // ____Get products____
             this.products.each(function(product) {
+                trash = (trash) ? '<li><a href="#" data-id="' + product.get('uuid') + '" uk-icon="icon: trash" class="link-delete"></a></li>' : '';
                 let action = '<ul class="uk-iconnav"><li><a href="#" uk-icon="icon: file-edit"></a></li>' + trash + '</ul>';
                 this.$('#table-body-products').append(
                     `<tr><td>${product.get('name')}</td><td>${product.get('barcode')}</td><td>${product.get('stock')}</td><td>${product.get('price')}</td><td>${action}</td></tr>`
@@ -78,4 +77,3 @@ const ViewDashboard = Backbone.View.extend({
         return this;
     }
   });
-  

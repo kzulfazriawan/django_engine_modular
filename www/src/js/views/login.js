@@ -5,6 +5,23 @@ const ViewLogin = Backbone.View.extend({
       'submit #login-form': 'login'
     },
 
+    initialize: function() {
+        this.login = '';
+        const self = this;
+
+        $.ajax({
+            url: 'http://localhost:8000/api/v1/engine/modules/products/',
+            method: 'GET',
+            content_type: 'application/json',
+            success: function(response){
+                console.log(response)
+            },
+            error: function(response){
+                window.location.href = '/not_found.html';
+            }
+        });
+    },
+
     login(e){
         e.preventDefault();
         let username = this.$('#username').val();
@@ -50,10 +67,10 @@ const ViewLogin = Backbone.View.extend({
     }, 
   
     render() {
-      $.get('/src/templates/login.html', (html) => {
-        this.$el.html(html);
-      });
-      return this;
+        $.get('/src/templates/login.html', (html) => {
+            this.$el.html(html);
+        });
+        return this;
     }
   });
   
