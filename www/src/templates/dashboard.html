@@ -1,49 +1,45 @@
-<div class="uk-container uk-container-large uk-margin-top">
-    <div class="uk-card uk-card-default uk-width-expand uk-margin">
-        <div class="uk-card-header">
-            <div class="uk-grid-small uk-flex-middle" uk-grid>
-                <div class="uk-width-auto">
-                    <nav class="uk-navbar-container uk-navbar-transparent">
-                        <div class="uk-container uk-container-expand">
-                            <div uk-navbar>
-                                <ul class="uk-navbar-nav">
-                                    <li class="uk-active"><a href="#">Home</a></li>
-                                    <li><a href="#product">Product</a></li>
-                                    <li><a href="#logout">Logout</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
+<div id="navigation"></div>
+
+<div class="uk-section">
+    <div class="uk-container">
+        <div class="uk-card uk-card-default uk-card-small uk-width-expand">
+            <div class="uk-card-header">
+                <h3 id="dashboard-header" class="uk-card-title"></h3>
             </div>
-        </div>
-        <div class="uk-card-body">
-            <label>Authorized as <span id="authorized-as"></span></label>
-            <table class="uk-table uk-table-small uk-table-divider uk-table-striped uk-text-small">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Barcode</th>
-                        <th>Stock</th>
-                        <th>Price</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body-products">
-                </tbody>
-            </table>
+            <div class="uk-card-body">
+                <div id="product-list-error"></div>
+                <table class="uk-table uk-table-small uk-table-justify  uk-table-divider">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Barcode</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-product-lists"></tbody>
+                </table>                        
+            </div>
         </div>
     </div>
 </div>
 
-<div id="modal-example" uk-modal>
-    <div class="uk-modal-dialog uk-modal-body">
-        <h2 class="uk-modal-title">Delete</h2>
-        <input type="hidden" id="delete-uuid" />
-        <p>Are you sure you wanted to delete this product ?</p>
-        <p class="uk-text-right">
-            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-            <a href="#" id="delete-confirmed">Delete</a>
-        </p>
+<!-- This is the modal delete -->
+<div id="dashboard-delete-product" uk-modal>
+    <div class="uk-modal-dialog">
+        <form id="delete-confirmation">
+            <div class="uk-modal-header uk-padding-small">
+                <h2 class="uk-modal-title uk-margin-remove">Delete confirmation</h2>
+                <input type="hidden" name="product-id" id="delete-product-id" />
+            </div>
+            <div class="uk-modal-body uk-padding-small">
+                <p id="confirmation-delete"></p>
+            </div>
+            <div class="uk-modal-footer uk-text-right uk-padding-small">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                <button class="uk-button uk-button-danger" type="submit">Delete</button>
+            </div>
+        </form>
     </div>
 </div>

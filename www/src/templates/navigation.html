@@ -1,0 +1,37 @@
+<div class="uk-position-top">
+    <nav class="uk-navbar-container uk-light" style="background-color: #222 !important;">
+        <div class="uk-container">
+            <div uk-navbar>
+                <div class="uk-navbar-left">
+                    <ul class="uk-navbar-nav">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#create-product">Create Product</a></li>
+                    </ul>
+                </div>
+                <div class="uk-navbar-right">
+                    <ul class="uk-navbar-nav">
+                        <li><a href="#" id="logout-service">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!-- This is the modal delete -->
+<div id="logout-page" uk-modal>
+    <div class="uk-modal-dialog">
+        <form id="logout-confirmation">
+            <div class="uk-modal-header uk-padding-small">
+                <h2 class="uk-modal-title uk-margin-remove">Logout confirmation</h2>
+            </div>
+            <div class="uk-modal-body uk-padding-small">
+                <p id="logout-delete"></p>
+            </div>
+            <div class="uk-modal-footer uk-text-right uk-padding-small">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                <button class="uk-button uk-button-danger" type="submit">Logout</button>
+            </div>
+        </form>
+    </div>
+</div>

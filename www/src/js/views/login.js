@@ -2,75 +2,89 @@ const ViewLogin = Backbone.View.extend({
     el: '#app',
 
     events: {
-      'submit #login-form': 'login'
+        'submit #login-form': 'onSubmitLogin'
     },
-
-    initialize: function() {
-        this.login = '';
-        const self = this;
-
-        $.ajax({
-            url: 'http://localhost:8000/api/v1/engine/modules/products/',
-            method: 'GET',
-            content_type: 'application/json',
-            success: function(response){
-                console.log(response)
-            },
-            error: function(response){
-                window.location.href = '/not_found.html';
-            }
-        });
-    },
-
-    login(e){
+    
+    /**
+     * Handles login form submission
+     * @param {Event} e 
+     */
+    onSubmitLogin(e) {
         e.preventDefault();
-        let username = this.$('#username').val();
-        let password = this.$('#password').val();
 
+        // Get credentials
+        const username = this.$('#login-username-input').val();
+        const password = this.$('#login-password-input').val();
+
+        // Clear any previous alerts/messages
+        this.clearAlerts();
+
+        // Send login request
         $.ajax({
             url: 'http://localhost:8000/api/v1/authentication/token/',
             method: 'POST',
             contentType: "application/json; charset=utf-8",
-            data: JSON.stringify({'username': username, 'password': password}),
+            data: JSON.stringify({ username, password }),
+
             success: (response) => {
-                // Clear previous
-                this.$('.uk-text-danger').remove();
-                this.$('.uk-alert-danger').remove();
-                this.$('.uk-alert-success').remove();
                 localStorage.setItem('token', response.token);
-                this.$('#username-stack').before(`<div class="uk-alert-success uk-padding-small">Login success</div>`);
+
+                this.$('#login-alert').html(`
+                    <div class="uk-alert-success" uk-alert>
+                        <a href class="uk-alert-close" uk-close></a>
+                        <p>Authentication success. Redirecting...</p>
+                    </div>
+                `);
+
                 setTimeout(() => {
-                    window.location.href = '/#';
+                    window.location.href = '/#';  // Redirect to index
                 }, 3000);
             },
-            error: (response) => {
-                let res = response.responseJSON;
-                // Clear previous
-                this.$('.uk-text-danger').remove();
-                this.$('.uk-alert-danger').remove();
-                this.$('.uk-alert-success').remove();
 
-                // Field-specific
+            error: (xhr) => {
+                const res = xhr.responseJSON || {};
+
+                // Field-level validation messages
                 if (res.username) {
-                    this.$('#username').after(`<span class="uk-text-danger">${res.username[0]}</span>`);
+                    this.$('#login-username-inline').after(
+                        `<span class="uk-text-danger">${res.username[0]}</span>`
+                    );
                 }
 
                 if (res.password) {
-                    this.$('#password').after(`<span class="uk-text-danger">${res.password[0]}</span>`);
+                    this.$('#login-password-inline').after(
+                        `<span class="uk-text-danger">${res.password[0]}</span>`
+                    );
                 }
 
-                if (res.non_field_errors) {
-                    this.$('#username-stack').before(`<div class="uk-alert-danger uk-padding-small">${res.non_field_errors[0]}</div>`);
+                if (res.non_field_errors || res.detail) {
+                    this.$('#login-alert').html(`
+                        <div class="uk-alert-danger" uk-alert>
+                            <a href class="uk-alert-close" uk-close></a>
+                            <p>${(res.non_field_errors && res.non_field_errors[0]) || res.detail || 'Login failed.'}</p>
+                        </div>
+                    `);
                 }
             }
         });
-    }, 
-  
+    },
+
+    /**
+     * Clears any error or alert messages
+     */
+    clearAlerts() {
+        this.$('.uk-text-danger').remove();
+        this.$('.uk-alert-danger').remove();
+        this.$('.uk-alert-success').remove();
+    },
+
+    /**
+     * Loads the login HTML template
+     */
     render() {
         $.get('/src/templates/login.html', (html) => {
             this.$el.html(html);
         });
         return this;
     }
-  });
-  
+});

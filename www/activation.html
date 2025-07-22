@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/src/css/uikit.min.css" />
+    <title>EM .: Engine Modular</title>
+</head>
+<body id="app">
+    <div class="uk-position-top">
+        <nav class="uk-navbar-container uk-light" style="background-color: #222 !important;">
+            <div class="uk-container">
+                <div uk-navbar>
+                    <div class="uk-navbar-left">
+                        <ul class="uk-navbar-nav">
+                            <li><a href="/">Go back to page</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="uk-section">
+        <div class="uk-container">
+            <div class="uk-card uk-card-default uk-card-small uk-width-expand">
+            <div class="uk-card-header">
+                <h3 id="activation-header" class="uk-card-title uk-text-danger">Page Service Unavailable!</h3>
+            </div>
+            <div class="uk-card-body">
+                <div class="uk-margin">
+                    <div id="activation-stock-inline" class="uk-inline uk-width-expand">
+                        <input id="activation-input" class="uk-checkbox" type="checkbox" />
+                        <input id="activation-version" class="uk-input uk-form-width-small" type="text" placeholder="Version"><sup class="uk-text-danger">*</sup>
+                        <span id="activation-status" class="uk-text-danger">Page status: <b>Inactive</b></span>
+                    </div>
+                    <span class="uk-text-muted"><sup class="uk-text-danger">*</sup>To activate or deactivate you must type the exact version on the input.</span>
+                </div>
+                <div class="uk-margin" id="update-version">
+                    <p>Current version: <b id="version"></b></p>
+                </div>
+                <form id="update-form">
+                    <div class="uk-margin" uk-margin>
+                        <div uk-form-custom="target: true">
+                            <input class="uk-input uk-form-width-large" type="text" placeholder="Update Version" aria-label="Custom controls">
+                        </div>
+                        <button class="uk-button uk-button-primary" type="submit">Update version</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/src/js/uikit.min.js"></script>
+    <script src="/src/js/uikit-icons.min.js"></script>
+    <script src="/src/js/jquery.min.js"></script>
+    <script src="/src/js/underscore-min.js"></script>
+    <script src="/src/js/backbone-min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const moduleUUID = "00000000-0000-0000-0000-000000000001";
+            const installUrl = `http://localhost:8000/api/v1/engine/modules/install/${moduleUUID}/`;
+            const uninstallUrl = `http://localhost:8000/api/v1/engine/modules/uninstall/${moduleUUID}/`;
+            const checkStatusUrl = `http://localhost:8000/api/v1/engine/modules/products/`;
+        
+            const $checkbox = $('#activation-input');
+            const $statusLabel = $('#activation-status');
+            const $header = $('#activation-header');
+            const $updateVersion = $('#update-version');
+            const $version = $('#version');
+        
+            // Initial check
+            let initial_check = function(){
+                $.ajax({
+                    url: checkStatusUrl,
+                    method: 'GET',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        console.log(response);
+                        updateUI(true, response); // Module active
+                    },
+                    error: function () {
+                        updateUI(false, {}); // Module not active
+                    }
+                });
+            }
+
+            initial_check();
+        
+            // Helper to update UI
+            function updateUI(isActive, response) {
+                if (isActive) {
+                    $checkbox.prop('checked', true);
+                    $statusLabel
+                        .text('Page status: active')
+                        .removeClass('uk-text-danger')
+                        .addClass('uk-text-success');
+                    $header
+                        .text('Page service available!')
+                        .removeClass('uk-text-danger')
+                        .addClass('uk-text-success');
+                    $updateVersion.show();
+                    if(response.version != undefined){
+                        $version.html(response.version);
+                        $('#activation-version').val(response.version);
+                    }
+                } else {
+                    $checkbox.prop('checked', false);
+                    $statusLabel
+                        .text('Page status: inactive')
+                        .removeClass('uk-text-success')
+                        .addClass('uk-text-danger');
+                    $header
+                        .text('Page service is unavailable!')
+                        .removeClass('uk-text-success')
+                        .addClass('uk-text-danger');
+                    $updateVersion.hide();
+                }
+            }
+        
+            // Handle toggle
+            $checkbox.on('change', function () {
+                const isChecked = $checkbox.is(':checked');
+                const targetUrl = isChecked ? installUrl : uninstallUrl;
+        
+                $.ajax({
+                    url: targetUrl,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ version: $('#activation-version').val() }),
+                    success: function (response) {
+                        updateUI(isChecked, response);
+                    },
+                    error: function () {
+                        alert('Failed to update module status.');
+                        // Revert checkbox state
+                        $checkbox.prop('checked', !isChecked);
+                    }
+                });
+            });
+
+            $('#update-form').on('submit', function (e) {
+                e.preventDefault();
+
+                const moduleUUID = "00000000-0000-0000-0000-000000000001";
+                const upgradeUrl = `http://localhost:8000/api/v1/engine/modules/upgrade/${moduleUUID}/`;
+
+                const versionInput = $(this).find('input[type="text"]').val().trim();
+
+                if (!versionInput) {
+                    alert("Please enter a version.");
+                    return;
+                }
+
+                $.ajax({
+                    url: upgradeUrl,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ version: versionInput }),
+                    success: function () {
+                        initial_check();
+                        UIkit.notification({
+                            message: `Module successfully upgraded to version ${versionInput}.`,
+                            status: 'success',
+                            pos: 'top-right',
+                            timeout: 3000
+                        });
+                    },
+                    error: function () {
+                        UIkit.notification({
+                            message: `Failed to upgrade module.`,
+                            status: 'danger',
+                            pos: 'top-right',
+                            timeout: 3000
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+        
+</body>
+</html>
